@@ -68,7 +68,7 @@
         noMore: false,
         scroller: null,
         scrollTop: 0,
-        previewPer: 1,
+        previewPer: 3,
         boxHeight: 400,
         showList: [true],
         emptyHeight: {top: 0, bottom: 0}
