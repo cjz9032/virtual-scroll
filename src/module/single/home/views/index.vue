@@ -1,23 +1,26 @@
 <template>
-  <div class="default-view" ref="abc">
-    <div class="empty-box" :style="{ height: emptyHeight.top + 'px' }"></div>
+  <div>
+    <button @click.stop="loadBigUser">拉不动?点我来一车</button>
+    <div class="default-view" ref="abc">
+      <div class="empty-box" :style="{ height: emptyHeight.top + 'px' }"></div>
 
-    <div class="user-item" v-for="(user, i) in userList" :key="user.id" :class="{hide:!showList[i]}">
-      <slot>
-        {{ user.id }}
-      </slot>
-    </div>
-    <div class="bot-box" :class="{hide:!showList[showList.length-1]}">
-      <slot>
-        <infinite-scroll :scroller="scroller" :noMore="noMore" :loading="loading" @load="loadUser"
-                         @update:scrollTop="n => scrollTop = n">
-          <div class="loading-text" slot="loading">我在加载中啊</div>
-          <div class="loading-text" slot="noMore">没有了哦</div>
-        </infinite-scroll>
-      </slot>
-    </div>
+      <div class="user-item" v-for="(user, i) in userList" :key="user.id" :class="{hide:!showList[i]}">
+        <slot>
+          {{ user.id }}
+        </slot>
+      </div>
+      <div class="bot-box" :class="{hide:!showList[showList.length-1]}">
+        <slot>
+          <infinite-scroll :scroller="scroller" :noMore="noMore" :loading="loading" @load="loadUser"
+                           @update:scrollTop="n => scrollTop = n">
+            <div class="loading-text" slot="loading">我在加载中啊</div>
+            <div class="loading-text" slot="noMore">没有了哦</div>
+          </infinite-scroll>
+        </slot>
+      </div>
 
-    <div class="empty-box" :style="{ height: emptyHeight.bottom + 'px' }"></div>
+      <div class="empty-box" :style="{ height: emptyHeight.bottom + 'px' }"></div>
+    </div>
   </div>
 </template>
 <style lang="less" scoped>
@@ -51,6 +54,7 @@
   import { userList } from '../service/getData'
   import infiniteScroll from '../components/infiniteScroll'
   import throttle from 'lodash/throttle'
+  import range from 'lodash/range'
 
   export default {
     components: {
@@ -74,7 +78,7 @@
     },
     mounted () {
       this.loadUser()
-      this.scroller = this.$el
+      this.scroller = this.$el.children[1]
     },
     methods: {
       // 获取用户
@@ -90,6 +94,13 @@
           }
           this.loading = false
         })
+      },
+      loadBigUser () {
+        let len = this.userList.length
+        this.page += 10
+        this.userList = this.userList.concat(range(len + 1, len + 1001).map(i => {
+          return {id: i, name: i}
+        }))
       },
       // 计算盒子
       renderBox: throttle(

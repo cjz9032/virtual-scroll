@@ -10,13 +10,13 @@ let mock = new MockAdapter(http, {delayResponse: 1000})
 
 mock.onGet(/\/userList.*/).reply(function (config) {
   let page = config.params.page
-  if (page > 5) {
+  if (page > 100) {
     return [200, {
       code: 200,
       data: []
     }]
   } else {
-    let r = range((page - 1) * 50, page * 50).map(i => {
+    let r = range((page - 1) * 100, page * 100).map(i => {
       return {id: i + 1, name: i + 1}
     })
     return [200, {
